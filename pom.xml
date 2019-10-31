@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.qiantao</groupId>
   <artifactId>MyPortal</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0</version>
   	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -10,22 +10,56 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
-		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
 	</properties>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 			</dependency>
+	
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-web</artifactId>
+				<exclusions>
+                <!--排除默认的tomcat-jdbc-->
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+         	   </exclusions>
 			</dependency>
+			<!-- freemarker -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-freemarker</artifactId>
 			</dependency>
+				<!-- mysql 驱动包 -->
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	     <version>8.0.11</version>
+	</dependency>
+	
+	<!-- 使用数据源 -->
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+       <version>1.1.10</version>
+    </dependency>
+	 <!-- mybatis -->
+         <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+              <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        	  <version>8.0.11</version>
+        </dependency>
 		</dependencies>
+	
 	
 		<dependencyManagement>
 		<dependencies>
@@ -38,4 +72,43 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+		<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+			<!-- 打包时依赖和jar包分离    运行时会自动区lib下找classpath -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>com.qiantao.PortalApp</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/lib
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

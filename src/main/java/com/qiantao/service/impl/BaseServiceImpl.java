@@ -1,13 +1,22 @@
 package com.qiantao.service.impl;
 
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
+import com.qiantao.mapper.BaseMapper;
 import com.qiantao.service.BaseService;
 @Service
 public class BaseServiceImpl implements BaseService {
 
+	@Resource
+	BaseMapper baseMapper;
 	@Override
 	public Object getModel(Long id) {
+		List list=baseMapper.getAll();
 		return null;
 	}
 
