@@ -36,9 +36,9 @@ public class PortalApp {
     }
     
     /**
-               * 配置监控服务器
+     * 配置监控服务器
      * @return 返回监控注册的servlet对象
-     * @author SimpleWu
+     * @author qiantao
      */
     @Bean
     public ServletRegistrationBean statViewServlet() {
