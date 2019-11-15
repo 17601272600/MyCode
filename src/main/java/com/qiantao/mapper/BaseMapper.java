@@ -1,15 +1,19 @@
 package com.qiantao.mapper;
 
-import java.util.List;
-import java.util.Map;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-@Mapper
+import com.qiantao.domain.BaseDomain;
+
 public interface BaseMapper {
 	
-	@Select({"select * from disabled_employment limit 10"})
-	public List<Map> getAll();
+	public BaseDomain get(Long id);
+	
+	
+	public boolean delete(Long id);
+	
+	
+	public boolean update(BaseDomain domain);
 	
 
+	public boolean insert(BaseDomain domain);
+	
 }

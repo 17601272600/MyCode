@@ -1,5 +1,6 @@
 package com.qiantao;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 @EnableEurekaClient
 @SpringBootApplication
 public class PortalApp {
@@ -66,6 +70,23 @@ public class PortalApp {
         // 忽略过滤格式
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*,");
         return filterRegistrationBean;
+    }
+    
+    
+    /**
+     * redis连接
+     * @return
+     */
+    @Bean
+    public JedisPool redisPoolFactory(@Value("${spring.redis.host}")String host,
+    		  						@Value("${spring.redis.port}")int port,
+    		  						 @Value("${spring.redis.timeout}")int timeout,
+    		  						@Value("${spring.redis.password}")String password) {	
+    	JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxIdle(8);//连接池默认最大空闲连接为8
+        jedisPoolConfig.setJmxEnabled(true);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
+        return jedisPool;
     }
 
     

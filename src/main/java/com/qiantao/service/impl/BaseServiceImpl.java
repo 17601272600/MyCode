@@ -1,49 +1,40 @@
 package com.qiantao.service.impl;
 
-
-import java.util.List;
-
 import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.qiantao.mapper.BaseMapper;
+import com.qiantao.domain.BaseDomain;
 import com.qiantao.service.BaseService;
-@Service
-public class BaseServiceImpl implements BaseService {
+import com.qiantao.util.RedisUtil;
 
+public abstract class BaseServiceImpl implements BaseService {
+	
 	@Resource
-	BaseMapper baseMapper;
+	public RedisUtil redisUtil;
+	
 	@Override
-	public Object getModel(Long id) {
-		List list=baseMapper.getAll();
-		return null;
+	public void delete(Long... ids) {
+		for(Long id:ids) {
+			BaseDomain domain=this.getModel(id);
+			redisUtil.removeModel(domain);
+			this.getMapper().delete(id);
+		}
 	}
 
 	@Override
-	public Object getModel(Long[] ids) {
-		return null;
+	public boolean update(BaseDomain domain) {
+		boolean flag=this.getMapper().update(domain);
+		redisUtil.removeModel(domain);
+		return flag;
 	}
 
 	@Override
-	public Object get(Long id) {
-		return null;
-	}
-
-	@Override
-	public Object saveOrUpdate(Object model) {
-		return null;
-	}
-
-	@Override
-	public void delete(Long[] ids) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void delete(Long id) {
-		
+	public boolean saveOrUpdate(BaseDomain domain) {
+		if(domain==null||domain.getId()<0) {
+			return false;
+		}else if(domain.getId()==0||domain.getId()==null) {
+			return this.getMapper().insert(domain);
+		}else {
+			return update(domain);
+		}
 	}
 
 }

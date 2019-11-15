@@ -1,22 +1,20 @@
 package com.qiantao.service;
 
+import com.qiantao.domain.BaseDomain;
+import com.qiantao.mapper.BaseMapper;
 
-public interface BaseService {
+public interface BaseService<T extends BaseDomain>{
 
-	Object getModel(Long id);
+	T getModel(Long id);
 	
-	Object getModel(Long[] ids);
-	
-    Object get(Long id);
+	BaseMapper getMapper();
     
-    Object saveOrUpdate(Object model);
 
-    void delete(Long[] ids);
+    void delete(Long ... id);
 
-    void delete(Long id);
-    
-    
-    
+	boolean saveOrUpdate(T domain);
+
+	boolean update(T domain); 
 
 
 }
