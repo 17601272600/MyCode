@@ -35,15 +35,10 @@ public class UserController extends BaseController {
 	public String newAccount(HttpServletRequest request) {
 		
 		try {
-		
-			String url="http://oauth/oauth/account/regeist";
 			Map<String,String> map=new HashMap<String,String>();
 			map.put("loginId",request.getParameter("loginId"));
 			map.put("password",request.getParameter("passcode"));
-			ResponseVo result=restTemplate.postForObject(url, map, ResponseVo.class);
-			if(result.getIsSuc().equals(0)) {
-				return "注冊成功";
-			}
+			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
