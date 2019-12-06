@@ -1,5 +1,7 @@
 package com.qiantao.vo;
 
+import lombok.Data;
+@Data 
 public class ResponseVo {
 	Integer isSuc;
 	
@@ -7,27 +9,16 @@ public class ResponseVo {
 	
 	Object data;
 
-	public Integer getIsSuc() {
-		return isSuc;
+	public ResponseVo(int isSuc,String msg) {
+		this(isSuc,msg,null);
 	}
 
-	public void setIsSuc(Integer isSuc) {
-		this.isSuc = isSuc;
+	public ResponseVo(int isSuc, String msg, Object data) {
+		this.isSuc=isSuc;
+		this.msg=msg;
+		this.data=data;
 	}
 
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
+	
+	
 }

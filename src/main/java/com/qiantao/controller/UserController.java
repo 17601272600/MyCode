@@ -1,21 +1,19 @@
 package com.qiantao.controller;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.qiantao.service.MsgService;
 import com.qiantao.service.UserService;
+import com.qiantao.util.RedisUtil;
 import com.qiantao.vo.ResponseVo;
 
 @RestController
@@ -28,46 +26,49 @@ public class UserController extends BaseController {
 	@Resource
 	UserService userService;
 	
-	@Autowired
-	RestTemplate restTemplate;
+	@Resource
+	MsgService msgService;
+	
+	@Resource
+	RedisUtil redisUtil;
 	
 	@RequestMapping("/newAccount")
-	public String newAccount(HttpServletRequest request) {
-		
+	public ResponseVo newAccount(HttpServletRequest request) {
+		ResponseVo vo=null;
 		try {
-			Map<String,String> map=new HashMap<String,String>();
-			map.put("loginId",request.getParameter("loginId"));
-			map.put("password",request.getParameter("passcode"));
-			
+			String loginId=request.getParameter("loginId");
+			String pwd=request.getParameter("passcode");
+			vo=userService.createAccount(loginId,pwd);
 		} catch (Exception e) {
 			
 			e.printStackTrace();
 			LOG.error(e.getMessage(),e);
 		}
-		return "注冊失敗";
+		return vo;
 	}
-	@RequestMapping("/text")
-	public String text(HttpServletRequest request,String telephone) {
-		System.out.println(telephone);
-		System.out.println("telephone by mvn "+telephone);
-		System.out.println("telephone by attr"+request.getAttribute("telephone"));
-		System.out.println("telephone by param"+request.getParameter("telephone"));
-		System.out.println("Attributions:");
-		 Enumeration<String>  attnames=request.getAttributeNames();
-		while (attnames.hasMoreElements()) {
-			String string = (String) attnames.nextElement();
-			System.out.println("attr:"+request.getAttribute(string));
+	
+	@RequestMapping("/getCode")
+	public ResponseVo getCode(String telephone) {
+		ResponseVo vo=null;
+		try {
+			String code=getRandomString(11);
+			msgService.sendCodeToTel(telephone, code);
+			redisUtil.setCache(code,60l);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
-		System.out.println("end");
-		System.out.println("Parameter:");
-		attnames=request.getParameterNames();
-		
-		while (attnames.hasMoreElements()) {
-			String string = (String) attnames.nextElement();
-			System.out.println("attr:"+request.getParameter(string));
-		}
-		System.out.println("end");
-		
-		return null;
+		return vo;
 	}
+	
+	public static String getRandomString(int length){
+	     String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	     Random random=new Random();
+	     StringBuffer sb=new StringBuffer();
+	     for(int i=0;i<length;i++){
+	       int number=random.nextInt(62);
+	       sb.append(str.charAt(number));
+	     }
+	     return sb.toString();
+	 }
 }
