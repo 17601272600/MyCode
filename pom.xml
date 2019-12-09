@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.qiantao</groupId>
-	<artifactId>MyPortal</artifactId>
+	<artifactId>MyCode</artifactId>
 	<version>0</version>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -61,12 +61,10 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.11</version>
 		</dependency>    
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <version>1.18.0</version>
-    <scope>provided</scope>
+		<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>1.1.1</version>
 </dependency>
 <dependency>
   <groupId>org.springframework.boot</groupId>
