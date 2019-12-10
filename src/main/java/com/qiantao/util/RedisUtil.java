@@ -4,11 +4,10 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
-
-import com.qiantao.domain.BaseDomain;
 
 /**
  * redicache 工具类
@@ -16,10 +15,11 @@ import com.qiantao.domain.BaseDomain;
  * 存在两种命名空 
  * model:对象永久保存
  * cache:非永久保存,默认7s
+ * @param <T>
  */
 @SuppressWarnings("unchecked")
 @Component
-public class RedisUtil {
+public class RedisUtil<T> {
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private RedisTemplate redisTemplate;
@@ -33,9 +33,12 @@ public class RedisUtil {
 	public void removeModel(final String key) {
 		remove(modelNameSpace+key);
 	}
-	public void removeModel(final BaseDomain domain) {
-		remove(modelNameSpace+domain.getClass()+":"+domain.getId());
+
+	
+	 public void removeModel(final JpaRepository<T,Long> domain,Long id) {
+		 remove(modelNameSpace+domain.getClass()+":"+id); 
 	}
+	
 	public void removeCache(final String key) {
 		remove(cacheNameSpace+key);
 	}
@@ -51,13 +54,11 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public boolean existsInModel(String key) {
-		return exists(modelNameSpace+key);
-	}
-	public boolean existsInModel(final BaseDomain domain) {
-		return exists(modelNameSpace+domain.getClass()+":"+domain.getId());
-	}
-	
+	/*
+	 * public boolean existsInModel(String key) { return exists(modelNameSpace+key);
+	 * } public boolean existsInModel(final BaseDomain domain) { return
+	 * exists(modelNameSpace+domain.getClass()+":"+domain.getId()); }
+	 */
 	public boolean existsInCache(String key) {
 		return	exists(cacheNameSpace+key);
 	}
@@ -73,9 +74,11 @@ public class RedisUtil {
 	public Object getModel(final String key) {
 		return get(modelNameSpace+key);
 	}
-	public Object getModel(final BaseDomain domain) {
-		return get(modelNameSpace+domain.getClass()+":"+domain.getId());
-	}
+
+	/*
+	 * public Object getModel(final BaseDomain domain) { return
+	 * get(modelNameSpace+domain.getClass()+":"+domain.getId()); }
+	 */
 	public Object getCache(final String key) {
 		return get(cacheNameSpace+key);
 	}
@@ -93,9 +96,11 @@ public class RedisUtil {
 	public boolean setModel(String key, Object value) {
 		return set(modelNameSpace+key, value,0l);
 	}
-	public Object setModel(final BaseDomain domain) {
-		return set(modelNameSpace+domain.getClass()+":"+domain.getId(),domain,0l);
-	}
+
+	/*
+	 * public Object setModel(final BaseDomain domain) { return
+	 * set(modelNameSpace+domain.getClass()+":"+domain.getId(),domain,0l); }
+	 */
 	public boolean setCache(String key, Object value) {
 		return set(cacheNameSpace+key, value,7l);
 	}

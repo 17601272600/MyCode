@@ -17,6 +17,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @SpringBootApplication
+@SuppressWarnings("rawtypes")
 public class PortalApp {
 
 	public static void main(String[] arg0) {
@@ -43,7 +44,8 @@ public class PortalApp {
      */
     @Bean
     public ServletRegistrationBean statViewServlet() {
-        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+        @SuppressWarnings("unchecked")
+		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
         // 添加IP白名单
         servletRegistrationBean.addInitParameter("allow", "127.0.0.1");
         // 添加IP黑名单，当白名单和黑名单重复时，黑名单优先级更高
@@ -61,7 +63,8 @@ public class PortalApp {
     
     @Bean
     public FilterRegistrationBean statFilter() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
+		@SuppressWarnings("unchecked")
+		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
         // 添加过滤规则
         filterRegistrationBean.addUrlPatterns("/*");
         // 忽略过滤格式
